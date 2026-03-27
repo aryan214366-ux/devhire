@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevHire — Freelance Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c28;
+    --border: #2a2a3a;
+    --accent: #6c63ff;
+    --accent2: #ff6b6b;
+    --accent3: #43e97b;
+    --text: #e8e8f0;
+    --muted: #7a7a9a;
+    --gold: #ffd166;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND ORBS ── */
+  .bg-orb {
+    position: fixed; border-radius: 50%; filter: blur(100px);
+    pointer-events: none; z-index: 0; opacity: 0.15;
+  }
+  .bg-orb-1 { width:500px;height:500px;background:var(--accent);top:-150px;left:-150px; }
+  .bg-orb-2 { width:400px;height:400px;background:var(--accent2);bottom:-100px;right:-100px; }
+  .bg-orb-3 { width:300px;height:300px;background:var(--accent3);top:50%;left:50%;transform:translate(-50%,-50%); }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,15,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.4rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+  .nav-tabs {
+    display: flex; gap: 0.25rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 4px;
+  }
+  .nav-tab {
+    padding: 0.4rem 1.1rem; border-radius: 8px; cursor: pointer;
+    font-size: 0.85rem; font-weight: 500; transition: all 0.2s;
+    color: var(--muted); border: none; background: none;
+  }
+  .nav-tab.active {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 0 20px rgba(108,99,255,0.4);
+  }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+
+  .nav-right { display: flex; gap: 0.75rem; align-items: center; }
+  .btn-sm {
+    padding: 0.4rem 1rem; border-radius: 8px; font-size: 0.82rem;
+    font-weight: 500; cursor: pointer; transition: all 0.2s;
+    border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+  }
+  .btn-sm:hover { color: var(--text); border-color: var(--accent); }
+  .btn-primary {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+    box-shadow: 0 0 16px rgba(108,99,255,0.35);
+  }
+  .btn-primary:hover { box-shadow: 0 0 28px rgba(108,99,255,0.55); transform:translateY(-1px); }
+
+  /* ── LAYOUT ── */
+  .app { position: relative; z-index: 1; }
+
+  /* ── VIEWS ── */
+  .view { display: none; padding: 2rem; max-width: 1200px; margin: 0 auto; }
+  .view.active { display: block; }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center; padding: 5rem 2rem 3rem;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 100px; padding: 0.3rem 1rem; font-size: 0.78rem;
+    color: var(--accent); margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800; line-height: 1.1; margin-bottom: 1.25rem;
+    letter-spacing: -1px;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p { font-size: 1.1rem; color: var(--muted); max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.7; }
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-lg {
+    padding: 0.85rem 2rem; border-radius: 12px; font-size: 0.95rem;
+    font-weight: 600; cursor: pointer; transition: all 0.25s;
+    border: none; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 0 24px rgba(108,99,255,0.4); }
+  .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(108,99,255,0.6); }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── STATS ── */
+  .stats-bar {
+    display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+    padding: 2rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif; font-size: 1.8rem;
+    font-weight: 800; color: var(--accent);
+  }
+  .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-size: 1.4rem;
+    font-weight: 700; letter-spacing: -0.5px;
+  }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+  }
+  .filter-chip {
+    padding: 0.35rem 0.9rem; border-radius: 100px; font-size: 0.8rem;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface); color: var(--muted); transition: all 0.2s;
+  }
+  .filter-chip.on { background: rgba(108,99,255,0.15); border-color: var(--accent); color: var(--accent); }
+  .filter-chip:hover:not(.on) { border-color: var(--muted); color: var(--text); }
+
+  /* ── PROJECT CARD ── */
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); gap: 1.25rem; }
+
+  .project-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem; transition: all 0.25s;
+    cursor: pointer; position: relative; overflow: hidden;
+  }
+  .project-card::before {
+    content:''; position:absolute; inset:0; opacity:0; transition:opacity 0.25s;
+    background: linear-gradient(135deg, rgba(108,99,255,0.05), transparent);
+  }
+  .project-card:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .project-card:hover::before { opacity:1; }
+
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+  .card-tag {
+    font-size: 0.72rem; font-weight: 600; padding: 0.25rem 0.7rem;
+    border-radius: 100px; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .tag-open { background: rgba(67,233,123,0.15); color: var(--accent3); border: 1px solid rgba(67,233,123,0.3); }
+  .tag-closed { background: rgba(255,107,107,0.15); color: var(--accent2); border: 1px solid rgba(255,107,107,0.3); }
+  .tag-inprogress { background: rgba(255,209,102,0.15); color: var(--gold); border: 1px solid rgba(255,209,102,0.3); }
+
+  .card-budget {
+    font-family: 'Syne', sans-serif; font-size: 1.1rem;
+    font-weight: 700; color: var(--accent3);
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif; font-size: 1rem;
+    font-weight: 700; margin-bottom: 0.5rem; line-height: 1.4;
+  }
+  .card-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+
+  .card-skills { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .skill-pill {
+    font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 6px;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
+  }
+
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1rem; border-top: 1px solid var(--border);
+  }
+  .client-info { display: flex; align-items: center; gap: 0.6rem; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+  }
+  .client-meta { font-size: 0.78rem; }
+  .client-name { color: var(--text); font-weight: 500; }
+  .client-num { color: var(--muted); font-size: 0.72rem; }
+
+  .bids-count { font-size: 0.78rem; color: var(--muted); }
+  .bids-count span { color: var(--accent); font-weight: 600; }
+
+  .card-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+  .btn-card {
+    flex: 1; padding: 0.55rem; border-radius: 10px; font-size: 0.82rem;
+    font-weight: 500; cursor: pointer; transition: all 0.2s;
+    border: 1px solid var(--border); background: var(--surface2); color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-card-primary {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+    box-shadow: 0 0 12px rgba(108,99,255,0.3);
+  }
+  .btn-card-primary:hover { box-shadow: 0 0 20px rgba(108,99,255,0.5); }
+  .btn-card:hover:not(.btn-card-primary) { color: var(--text); border-color: var(--muted); }
+  .btn-card-danger { border-color: rgba(255,107,107,0.3); color: var(--accent2); }
+  .btn-card-danger:hover { background: rgba(255,107,107,0.1); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px); z-index: 200;
+    display: none; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2rem; width: 100%; max-width: 560px;
+    max-height: 90vh; overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .modal-title { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; }
+  .modal-close {
+    width:32px;height:32px;border-radius:8px;border:1px solid var(--border);
+    background:var(--surface2);color:var(--muted);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:1rem;
+    transition:all 0.2s;
+  }
+  .modal-close:hover { color:var(--text);border-color:var(--accent2); }
+
+  /* ── FORM ── */
+  .form-group { margin-bottom: 1.25rem; }
+  .form-label { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; display: block; font-weight: 500; }
+  .form-input, .form-textarea, .form-select {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.7rem 1rem; color: var(--text);
+    font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.2s; outline: none;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--accent); }
+  .form-textarea { resize: vertical; min-height: 100px; }
+  .form-select option { background: var(--surface2); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* ── DETAIL MODAL ── */
+  .detail-section { margin-bottom: 1.5rem; }
+  .detail-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+  .detail-value { font-size: 0.95rem; }
+
+  .bids-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .bid-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem;
+  }
+  .bid-info { display: flex; align-items: center; gap: 0.75rem; flex: 1; }
+  .bid-meta { flex: 1; }
+  .bid-name { font-size: 0.88rem; font-weight: 500; }
+  .bid-amount { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent3); }
+  .bid-msg { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+  .bid-dev-num { font-size: 0.72rem; color: var(--muted); }
+  .btn-accept {
+    padding: 0.4rem 0.9rem; border-radius: 8px; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+    background: rgba(67,233,123,0.15); border: 1px solid rgba(67,233,123,0.3);
+    color: var(--accent3); white-space: nowrap;
+  }
+  .btn-accept:hover { background: rgba(67,233,123,0.25); }
+  .btn-accept.accepted { background: var(--accent3); color: #0a0a0f; }
+
+  /* ── BID FORM ── */
+  .bid-form { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+
+  /* ── PEOPLE PAGE ── */
+  .people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 1rem; }
+  .person-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem; text-align: center; transition: all 0.25s;
+  }
+  .person-card:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-2px); }
+  .person-avatar {
+    width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 700;
+  }
+  .person-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .person-role { font-size: 0.78rem; margin-bottom: 0.5rem; }
+  .person-num { font-size: 0.72rem; color: var(--muted); font-family: monospace; }
+  .person-stats { display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .person-stat { text-align: center; }
+  .person-stat-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; }
+  .person-stat-key { font-size: 0.7rem; color: var(--muted); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    transform: translateY(100px); opacity: 0; transition: all 0.3s;
+    max-width: 340px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-icon { font-size: 1.2rem; }
+  .toast-text { font-size: 0.88rem; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center; padding: 4rem 2rem; color: var(--muted);
+  }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; color: var(--text); margin-bottom: 0.5rem; }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+  /* COLORS */
+  .c1 { background: linear-gradient(135deg,#6c63ff,#9c8fff); }
+  .c2 { background: linear-gradient(135deg,#ff6b6b,#ff9f9f); }
+  .c3 { background: linear-gradient(135deg,#43e97b,#38f9d7); }
+  .c4 { background: linear-gradient(135deg,#ffd166,#ffa654); }
+  .c5 { background: linear-gradient(135deg,#a29bfe,#fd79a8); }
+  .c6 { background: linear-gradient(135deg,#0abde3,#48dbfb); }
+
+  @media(max-width:640px) {
+    nav { padding: 0 1rem; }
+    .nav-tabs { display: none; }
+    .hero h1 { font-size: 2rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .view { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">DevHire</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('home')">🏠 Home</button>
+    <button class="nav-tab" onclick="showView('projects')">💼 Projects</button>
+    <button class="nav-tab" onclick="showView('people')">👥 People</button>
+  </div>
+  <div class="nav-right">
+    <button class="btn-sm" onclick="openModal('clientModal')">Post Project</button>
+    <button class="btn-sm btn-primary" onclick="openModal('devModal')">Bid as Dev</button>
+  </div>
+</nav>
+
+<div class="app">
+
+  <!-- ══ HOME VIEW ══ -->
+  <div id="view-home" class="view active">
+    <div class="hero">
+      <div class="hero-badge">✦ The Modern Freelance Platform</div>
+      <h1>Connect. Build.<br><span>Ship Together.</span></h1>
+      <p>Clients post projects, developers bid — get the right talent working on what matters.</p>
+      <div class="hero-btns">
+        <button class="btn-lg btn-accent" onclick="openModal('clientModal')">Post a Project</button>
+        <button class="btn-lg btn-outline" onclick="showView('projects')">Browse Projects</button>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-num" id="stat-projects">0</div>
+        <div class="stat-label">Active Projects</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-devs">0</div>
+        <div class="stat-label">Developers</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-clients">0</div>
+        <div class="stat-label">Clients</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-bids">0</div>
+        <div class="stat-label">Total Bids</div>
+      </div>
+    </div>
+
+    <!-- Recent Projects -->
+    <div class="section-header">
+      <div class="section-title">Recent Projects</div>
+      <button class="btn-sm" onclick="showView('projects')">View All →</button>
+    </div>
+    <div class="projects-grid" id="home-projects"></div>
+  </div>
+
+  <!-- ══ PROJECTS VIEW ══ -->
+  <div id="view-projects" class="view">
+    <div class="section-header">
+      <div class="section-title">All Projects</div>
+      <button class="btn-sm btn-primary" onclick="openModal('clientModal')">+ Post Project</button>
+    </div>
+    <div class="filters">
+      <div class="filter-chip on" onclick="filterProjects('all',this)">All</div>
+      <div class="filter-chip" onclick="filterProjects('open',this)">🟢 Open</div>
+      <div class="filter-chip" onclick="filterProjects('inprogress',this)">🟡 In Progress</div>
+      <div class="filter-chip" onclick="filterProjects('closed',this)">🔴 Closed</div>
+    </div>
+    <div class="projects-grid" id="all-projects"></div>
+  </div>
+
+  <!-- ══ PEOPLE VIEW ══ -->
+  <div id="view-people" class="view">
+    <div class="section-header">
+      <div class="section-title">Clients & Developers</div>
+    </div>
+    <div style="margin-bottom:1.5rem;">
+      <div class="section-title" style="font-size:1rem;margin-bottom:1rem;color:var(--muted);">CLIENTS</div>
+      <div class="people-grid" id="clients-list"></div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <div class="section-title" style="font-size:1rem;margin-bottom:1rem;color:var(--muted);">DEVELOPERS</div>
+      <div class="people-grid" id="devs-list"></div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ══ POST PROJECT MODAL ══ -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📋 Post a New Project</div>
+      <button class="modal-close" onclick="closeModal('clientModal')">✕</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Your Name *</label>
+        <input class="form-input" id="c-name" placeholder="e.g. Rahul Sharma">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone / Contact *</label>
+        <input class="form-input" id="c-phone" placeholder="+91 98765 43210">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Project Title *</label>
+      <input class="form-input" id="c-title" placeholder="e.g. Build an E-Commerce Website">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Project Description *</label>
+      <textarea class="form-textarea" id="c-desc" placeholder="Describe your project in detail — requirements, goals, expected deliverables..."></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="c-cat">
+          <option>Web Development</option>
+          <option>Mobile App</option>
+          <option>UI/UX Design</option>
+          <option>Backend / API</option>
+          <option>AI / ML</option>
+          <option>DevOps</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Budget (₹)</label>
+        <input class="form-input" id="c-budget" placeholder="e.g. 50,000">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Skills Required (comma separated)</label>
+      <input class="form-input" id="c-skills" placeholder="React, Node.js, MongoDB">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Deadline</label>
+      <input class="form-input" type="date" id="c-deadline">
+    </div>
+
+    <button class="btn-lg btn-accent" style="width:100%;margin-top:0.5rem;" onclick="postProject()">🚀 Post Project</button>
+  </div>
+</div>
+
+<!-- ══ REGISTER AS DEVELOPER MODAL ══ -->
+<div class="modal-overlay" id="devModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">👨‍💻 Register as Developer</div>
+      <button class="modal-close" onclick="closeModal('devModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input class="form-input" id="d-name" placeholder="e.g. Priya Patel">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone / Contact *</label>
+        <input class="form-input" id="d-phone" placeholder="+91 99887 76655">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Skills (comma separated) *</label>
+      <input class="form-input" id="d-skills" placeholder="React, TypeScript, Node.js">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Experience</label>
+        <select class="form-select" id="d-exp">
+          <option>Fresher (0–1 yr)</option>
+          <option>Junior (1–3 yrs)</option>
+          <option>Mid (3–5 yrs)</option>
+          <option>Senior (5+ yrs)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hourly Rate (₹)</label>
+        <input class="form-input" id="d-rate" placeholder="e.g. 1500">
+      </div>
+    </div>
+    <button class="btn-lg btn-accent" style="width:100%;margin-top:0.5rem;" onclick="registerDev()">✅ Register</button>
+  </div>
+</div>
+
+<!-- ══ PROJECT DETAIL MODAL ══ -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <div class="modal-title" id="detail-title">Project Details</div>
+      <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    </div>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <span class="toast-text" id="toast-text">Done!</span>
+</div>
+
+<script>
+// ── DATA STORE ──
+let projects = [
+ 
+];
+
+let developers = [
+ 
+];
+
+let clients = [
+  
+];
+
+let nextProjectId = 5;
+let nextDevId = 5;
+let nextClientId = 5;
+let currentFilter = 'all';
+let activeBidProject = null;
+
+// ── VIEWS ──
+function showView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['home','projects','people'][i] === v);
+  });
+  if (v === 'home') { renderHome(); updateStats(); }
+  if (v === 'projects') renderProjectsPage();
+  if (v === 'people') renderPeople();
+}
+
+// ── STATS ──
+function updateStats() {
+  document.getElementById('stat-projects').textContent = projects.filter(p=>p.status==='open').length;
+  document.getElementById('stat-devs').textContent = developers.length;
+  document.getElementById('stat-clients').textContent = clients.length;
+  const totalBids = projects.reduce((a,p)=>a+p.bids.length,0);
+  document.getElementById('stat-bids').textContent = totalBids;
+}
+
+// ── CARD BUILDER ──
+function buildCard(p, isClient = false) {
+  const tagMap = { open:'tag-open', inprogress:'tag-inprogress', closed:'tag-closed' };
+  const tagLabel = { open:'● Open', inprogress:'⟳ In Progress', closed:'✕ Closed' };
+  const initials = p.clientName.split(' ').map(w=>w[0]).join('').slice(0,2);
+  const skillPills = p.skills.slice(0,4).map(s=>`<span class="skill-pill">${s}</span>`).join('');
+  const extraBtns = isClient
+    ? (p.status !== 'closed' ? `<button class="btn-card btn-card-danger" onclick="closeProject(${p.id},event)">Close Project</button>` : '')
+    : (p.status === 'open' ? `<button class="btn-card btn-card-primary" onclick="openBidForm(${p.id},event)">Place Bid</button>` : '');
+
+  return `
+  <div class="project-card" onclick="openDetail(${p.id})">
+    <div class="card-top">
+      <span class="card-tag ${tagMap[p.status]}">${tagLabel[p.status]}</span>
+      <span class="card-budget">${p.budget || '–'}</span>
+    </div>
+    <div class="card-title">${p.title}</div>
+    <div class="card-desc">${p.desc.slice(0,120)}${p.desc.length>120?'…':''}</div>
+    <div class="card-skills">${skillPills}</div>
+    <div class="card-footer">
+      <div class="client-info">
+        <div class="avatar ${p.clientColor}">${initials}</div>
+        <div class="client-meta">
+          <div class="client-name">${p.clientName}</div>
+          <div class="client-num">${p.clientPhone}</div>
+        </div>
+      </div>
+      <div class="bids-count"><span>${p.bids.length}</span> bids</div>
+    </div>
+    <div class="card-actions" onclick="event.stopPropagation()">
+      <button class="btn-card" onclick="openDetail(${p.id})">View Details</button>
+      ${extraBtns}
+    </div>
+  </div>`;
+}
+
+function renderHome() {
+  const el = document.getElementById('home-projects');
+  const recent = [...projects].reverse().slice(0,6);
+  el.innerHTML = recent.length ? recent.map(p=>buildCard(p)).join('') : emptyState('No projects yet','Post the first one!');
+}
+
+function renderProjectsPage() {
+  const el = document.getElementById('all-projects');
+  const filtered = currentFilter === 'all' ? projects : projects.filter(p=>p.status===currentFilter);
+  el.innerHTML = filtered.length ? filtered.map(p=>buildCard(p)).join('') : emptyState('No projects found','Try a different filter');
+}
+
+function filterProjects(f, chip) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('on'));
+  chip.classList.add('on');
+  renderProjectsPage();
+}
+
+function emptyState(title, sub) {
+  return `<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">📭</div><h3>${title}</h3><p>${sub}</p></div>`;
+}
+
+// ── PEOPLE ──
+function renderPeople() {
+  document.getElementById('clients-list').innerHTML = clients.map(c=>{
+    const initials = c.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+    const myProjects = projects.filter(p=>p.clientName===c.name);
+    return `
+    <div class="person-card">
+      <div class="person-avatar ${c.color}">${initials}</div>
+      <div class="person-name">${c.name}</div>
+      <div class="person-role" style="color:var(--gold)">Client</div>
+      <div class="person-num">${c.phone}</div>
+      <div class="person-stats">
+        <div class="person-stat"><div class="person-stat-val" style="color:var(--accent)">${myProjects.length}</div><div class="person-stat-key">Projects</div></div>
+        <div class="person-stat"><div class="person-stat-val" style="color:var(--accent3)">${myProjects.filter(p=>p.status==='open').length}</div><div class="person-stat-key">Open</div></div>
+        <div class="person-stat"><div class="person-stat-val" style="color:var(--accent2)">${myProjects.filter(p=>p.status==='closed').length}</div><div class="person-stat-key">Closed</div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('devs-list').innerHTML = developers.map(d=>{
+    const initials = d.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+    const bidCount = projects.reduce((a,p)=>a+p.bids.filter(b=>b.devId===d.id).length,0);
+    const wonCount = projects.reduce((a,p)=>a+p.bids.filter(b=>b.devId===d.id&&b.accepted).length,0);
+    return `
+    <div class="person-card">
+      <div class="person-avatar ${d.color}">${initials}</div>
+      <div class="person-name">${d.name}</div>
+      <div class="person-role" style="color:var(--accent)">Developer · ${d.exp}</div>
+      <div class="person-num">${d.phone}</div>
+      <div class="card-skills" style="justify-content:center;margin-top:0.5rem">${d.skills.map(s=>`<span class="skill-pill">${s}</span>`).join('')}</div>
+      <div class="person-stats">
+        <div class="person-stat"><div class="person-stat-val" style="color:var(--accent3)">${d.rate}</div><div class="person-stat-key">Rate</div></div>
+        <div class="person-stat"><div class="person-stat-val" style="color:var(--accent)">${bidCount}</div><div class="person-stat-key">Bids</div></div>
+        <div class="person-stat"><div class="person-stat-val" style="color:var(--gold)">${wonCount}</div><div class="person-stat-key">Won</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── MODALS ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) closeModal(m.id); });
+});
+
+// ── POST PROJECT ──
+function postProject() {
+  const name = document.getElementById('c-name').value.trim();
+  const phone = document.getElementById('c-phone').value.trim();
+  const title = document.getElementById('c-title').value.trim();
+  const desc = document.getElementById('c-desc').value.trim();
+  const budget = document.getElementById('c-budget').value.trim();
+  const skills = document.getElementById('c-skills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const cat = document.getElementById('c-cat').value;
+  const deadline = document.getElementById('c-deadline').value;
+
+  if (!name||!phone||!title||!desc) return toast('❗','Fill in all required fields');
+
+  const colors = ['c1','c2','c3','c4','c5','c6'];
+  const color = colors[Math.floor(Math.random()*colors.length)];
+
+  projects.unshift({
+    id: nextProjectId++, status:'open',
+    clientName:name, clientPhone:phone, clientColor:color,
+    title, desc, category:cat,
+    budget: budget ? '₹'+budget : '–',
+    skills, deadline, bids:[]
+  });
+
+  // add/update client
+  const existing = clients.find(c=>c.phone===phone);
+  if(!existing) clients.push({ id:nextClientId++, name, phone, color, projects:1 });
+  else existing.projects++;
+
+  closeModal('clientModal');
+  ['c-name','c-phone','c-title','c-desc','c-budget','c-skills','c-deadline'].forEach(id=>document.getElementById(id).value='');
+  toast('🎉','Project posted successfully!');
+  updateStats();
+  renderHome();
+}
+
+// ── REGISTER DEV ──
+function registerDev() {
+  const name = document.getElementById('d-name').value.trim();
+  const phone = document.getElementById('d-phone').value.trim();
+  const skills = document.getElementById('d-skills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const exp = document.getElementById('d-exp').value;
+  const rate = document.getElementById('d-rate').value.trim();
+
+  if(!name||!phone||skills.length===0) return toast('❗','Fill in required fields');
+
+  const existing = developers.find(d=>d.phone===phone);
+  if(existing) return toast('ℹ️','This number is already registered');
+
+  const colors = ['c1','c2','c3','c4','c5','c6'];
+  const color = colors[Math.floor(Math.random()*colors.length)];
+
+  developers.push({ id:nextDevId++, name, phone, color, skills, exp, rate: rate?'₹'+rate+'/hr':'–' });
+  closeModal('devModal');
+  ['d-name','d-phone','d-skills','d-rate'].forEach(id=>document.getElementById(id).value='');
+  toast('🎉','Registered as developer!');
+  updateStats();
+}
+
+// ── PROJECT DETAIL ──
+function openDetail(id) {
+  const p = projects.find(x=>x.id===id);
+  if(!p) return;
+
+  document.getElementById('detail-title').textContent = p.title;
+  const tagMap = { open:'tag-open', inprogress:'tag-inprogress', closed:'tag-closed' };
+  const tagLabel = { open:'● Open', inprogress:'⟳ In Progress', closed:'✕ Closed' };
+
+  const bidsHtml = p.bids.length === 0
+    ? `<div style="color:var(--muted);font-size:0.88rem;padding:1rem 0;">No bids yet.</div>`
+    : p.bids.map((b,i) => {
+        const initials = b.devName.split(' ').map(w=>w[0]).join('').slice(0,2);
+        const acceptBtn = p.status==='open'
+          ? `<button class="btn-accept ${b.accepted?'accepted':''}" onclick="acceptBid(${p.id},${i})">${b.accepted?'✓ Accepted':'Accept'}</button>`
+          : (b.accepted ? `<span style="color:var(--accent3);font-size:0.8rem;">✓ Accepted</span>` : '');
+        return `
+        <div class="bid-card">
+          <div class="bid-info">
+            <div class="avatar ${b.devColor}" style="width:40px;height:40px;font-size:0.9rem;">${initials}</div>
+            <div class="bid-meta">
+              <div class="bid-name">${b.devName}</div>
+              <div class="bid-dev-num">${b.devPhone}</div>
+              <div class="bid-msg">${b.msg}</div>
+            </div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div class="bid-amount">${b.amount}</div>
+            ${acceptBtn}
+          </div>
+        </div>`;
+      }).join('');
+
+  const closeBtn = p.status !== 'closed'
+    ? `<button class="btn-card btn-card-danger" style="flex:1;" onclick="closeProject(${p.id},event);closeModal('detailModal');">✕ Close Project</button>`
+    : '';
+  const bidBtn = p.status === 'open'
+    ? `<button class="btn-card btn-card-primary" style="flex:1;" onclick="openBidForm(${p.id},null)">Place a Bid</button>`
+    : '';
+
+  document.getElementById('detail-content').innerHTML = `
+    <div style="display:flex;gap:0.75rem;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;">
+      <span class="card-tag ${tagMap[p.status]}">${tagLabel[p.status]}</span>
+      <span style="color:var(--accent3);font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;">${p.budget}</span>
+      <span style="color:var(--muted);font-size:0.82rem;">${p.category}</span>
+      ${p.deadline ? `<span style="color:var(--muted);font-size:0.82rem;">📅 ${p.deadline}</span>` : ''}
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Description</div>
+      <div class="detail-value" style="color:var(--muted);line-height:1.7;font-size:0.9rem;">${p.desc}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Skills Required</div>
+      <div class="card-skills">${p.skills.map(s=>`<span class="skill-pill">${s}</span>`).join('')}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Client</div>
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <div class="avatar ${p.clientColor}" style="width:40px;height:40px;">${p.clientName.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+        <div>
+          <div style="font-weight:500;">${p.clientName}</div>
+          <div style="font-size:0.8rem;color:var(--muted);">${p.clientPhone}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="detail-section">
+      <div class="detail-label">Bids (${p.bids.length})</div>
+      <div class="bids-list">${bidsHtml}</div>
+    </div>
+
+    ${p.status==='open' ? `
+    <div class="divider"></div>
+    <div class="detail-section">
+      <div class="detail-label">Submit Your Bid</div>
+      <div class="bid-form">
+        <div class="form-row" style="margin-bottom:1rem;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Your Name *</label>
+            <input class="form-input" id="bid-devname-${p.id}" placeholder="Developer name">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Your Phone *</label>
+            <input class="form-input" id="bid-devphone-${p.id}" placeholder="+91 ...">
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:1rem;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Bid Amount (₹) *</label>
+            <input class="form-input" id="bid-amount-${p.id}" placeholder="e.g. 80000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cover Message</label>
+          <textarea class="form-textarea" id="bid-msg-${p.id}" placeholder="Why are you the best fit?" style="min-height:70px;"></textarea>
+        </div>
+        <button class="btn-lg btn-accent" style="width:100%;padding:0.6rem;" onclick="placeBid(${p.id})">🎯 Submit Bid</button>
+      </div>
+    </div>` : ''}
+
+    <div style="display:flex;gap:0.75rem;margin-top:1.25rem;">
+      ${closeBtn}${bidBtn}
+    </div>
+  `;
+
+  openModal('detailModal');
+}
+
+// ── PLACE BID ──
+function openBidForm(id, e) {
+  if(e) e.stopPropagation();
+  openDetail(id);
+}
+
+function placeBid(id) {
+  const p = projects.find(x=>x.id===id);
+  if(!p) return;
+  const name = document.getElementById(`bid-devname-${id}`)?.value.trim();
+  const phone = document.getElementById(`bid-devphone-${id}`)?.value.trim();
+  const amount = document.getElementById(`bid-amount-${id}`)?.value.trim();
+  const msg = document.getElementById(`bid-msg-${id}`)?.value.trim();
+
+  if(!name||!phone||!amount) return toast('❗','Name, phone and amount are required');
+
+  const dup = p.bids.find(b=>b.devPhone===phone);
+  if(dup) return toast('ℹ️','You have already bid on this project');
+
+  // register dev if not already
+  let dev = developers.find(d=>d.phone===phone);
+  if(!dev) {
+    const colors=['c1','c2','c3','c4','c5','c6'];
+    const color=colors[Math.floor(Math.random()*colors.length)];
+    dev = { id:nextDevId++, name, phone, color, skills:[], exp:'–', rate:'–' };
+    developers.push(dev);
+  }
+
+  p.bids.push({ devId:dev.id, devName:name, devPhone:phone, devColor:dev.color, amount:'₹'+amount, msg:msg||'No message provided.', accepted:false });
+  toast('🎯','Bid placed successfully!');
+  updateStats();
+  openDetail(id); // refresh detail
+}
+
+// ── ACCEPT BID ──
+function acceptBid(projId, bidIdx) {
+  const p = projects.find(x=>x.id===projId);
+  if(!p) return;
+  p.bids.forEach((b,i) => b.accepted = (i===bidIdx));
+  p.status = 'inprogress';
+  toast('✅',`Bid accepted! Project is now In Progress.`);
+  renderProjectsPage();
+  renderHome();
+  openDetail(projId);
+}
+
+// ── CLOSE PROJECT ──
+function closeProject(id, e) {
+  if(e) e.stopPropagation();
+  const p = projects.find(x=>x.id===id);
+  if(!p) return;
+  p.status = 'closed';
+  toast('🔒','Project closed.');
+  renderProjectsPage();
+  renderHome();
+  updateStats();
+}
+
+// ── TOAST ──
+function toast(icon, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-text').textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+// ── INIT ──
+updateStats();
+renderHome();
+</script>
+</body>
+</html>
